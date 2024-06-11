@@ -3,7 +3,10 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import orderRoutes from './route/orderroutes.js';
 import flowRoutes from './route/flowroutes.js';
+import dotenv from 'dotenv';
 
+
+dotenv.config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
