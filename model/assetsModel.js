@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const {Schema,model,Types}=mongoose;
+const {Schema,model}=mongoose;
 
 const assetsSchema = new Schema({
     ObjectID: String,
