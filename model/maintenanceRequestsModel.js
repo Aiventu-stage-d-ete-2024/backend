@@ -7,7 +7,7 @@ const maintenanceRequestsSchema = new Schema({
     Description: String,
     ServiceLevel: Number,
     FunctionalLocation: String,
-    Asset: { type: Schema.Types.ObjectId, ref: 'Assets' },
+    Asset: { type: String, ref: 'Assets' },
     AssetVerified: Boolean,
     JobType: String,
     JobVariant: String,

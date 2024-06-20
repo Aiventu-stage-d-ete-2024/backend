@@ -4,14 +4,11 @@ import moment from 'moment';
 
 export async function getAllMaintenanceRequests(req, res) {
     try {
-        const maintenanceRequests = await MaintenanceRequests.find().populate({
-            path: 'Asset',
-            select: 'AssetID -_id' 
-        });
+        const maintenanceRequests = await MaintenanceRequests.find();
         const formattedRequests = maintenanceRequests.map(request => {
             const formattedRequest = {
                 ...request.toObject(),
-                AssetID: request.Asset ? request.Asset.AssetID : null,
+                AssetID: request.Asset,
                 Asset: undefined 
             };
             formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
@@ -26,14 +23,11 @@ export async function getAllMaintenanceRequests(req, res) {
 
 /* export async function getAllMaintenanceRequests(req, res) {
     try {
-        const maintenanceRequests = await MaintenanceRequests.find().populate({
-            path: 'Asset',
-            select: 'Name -_id'
-        });
+        const maintenanceRequests = await MaintenanceRequests.find();
         const formattedRequests = maintenanceRequests.map(request => {
             const formattedRequest = {
                 ...request.toObject(),
-            AssetName: request.Asset ? request.Asset.Name : null,
+            AssetName: request.Asset,
             Asset: undefined
         };
             formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
@@ -70,7 +64,7 @@ export async function createMaintenanceRequest(req, res) {
 
         const newMaintenanceRequest = new MaintenanceRequests({
             RequestID, RequestType, Description, ServiceLevel,
-            FunctionalLocation, Asset: asset._id, AssetVerified,
+            FunctionalLocation, Asset: asset.AssetID, AssetVerified,
             JobType, JobVariant, JobTrade, ActualStart,
             StartedByWorker, ResponsibleWorkerGroup, ResponsibleWorker,
             CurrentLifecycleState, NumberOfFaults,});
@@ -98,19 +92,16 @@ export async function updateMaintenanceRequest(req, res) {
 }
 
 
-export async function getMaintenanceRequestById(req, res) {
+/*export async function getMaintenanceRequestById(req, res) {
     try {
         const { id } = req.params;
-        const maintenanceRequest = await MaintenanceRequests.findById(id).populate({
-            path: 'Asset',
-            select: 'Name -_id'
-        });
+        const maintenanceRequest = await MaintenanceRequests.findById(id);
         if (!maintenanceRequest) {
             return res.status(404).json({ message: 'MaintenanceRequest not found' });
         }
         const formattedRequest = {
             ...maintenanceRequest.toObject(),
-            AssetName: maintenanceRequest.Asset ? maintenanceRequest.Asset.Name : null,
+            AssetName: maintenanceRequest.Asset,
             Asset: undefined 
         };
         formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
@@ -119,21 +110,18 @@ export async function getMaintenanceRequestById(req, res) {
         console.error('Error fetching maintenanceRequest by ID:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}
+}*/
 
-/*export async function getMaintenanceRequestById(req, res) {
+export async function getMaintenanceRequestById(req, res) {
     try {
         const { id } = req.params;
-        const maintenanceRequest = await MaintenanceRequests.findById(id).populate({
-            path: 'Asset',
-            select: 'Name -_id' 
-        });
+        const maintenanceRequest = await MaintenanceRequests.findById(id);
         if (!maintenanceRequest) {
             return res.status(404).json({ message: 'MaintenanceRequest not found' });
         }
         const formattedRequest = {
             ...maintenanceRequest.toObject(),
-            AssetName: maintenanceRequest.Asset ? maintenanceRequest.Asset.Name : null,
+            AssetID: maintenanceRequest.Asset,
             Asset: undefined
         };
         formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
@@ -142,4 +130,4 @@ export async function getMaintenanceRequestById(req, res) {
         console.error('Error fetching maintenanceRequest by ID:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}*/
+}
