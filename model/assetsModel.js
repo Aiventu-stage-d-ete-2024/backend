@@ -2,15 +2,15 @@ import mongoose from 'mongoose';
 const {Schema,model}=mongoose;
 
 const assetsSchema = new Schema({
-    ObjectID: String,
+    AssetID: String,
     Name: String,
     Parent: String,
-    Children: String,
+    NumberOfChildren: Number,
     AssetType: String,
     Manufacturer: String,
     Model: String,
     CustomerAccount: String,
-    Criticality: String,
+    Criticality: Number,
     FunctionalLocation: String,
     CurrentLifecycleState: String,
 });
