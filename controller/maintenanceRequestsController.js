@@ -1,5 +1,6 @@
 import MaintenanceRequests from '../model/maintenanceRequestsModel.js';
 import Assets from '../model/assetsModel.js';
+import moment from 'moment';
 
 export async function getAllMaintenanceRequests(req, res) {
     try {
@@ -7,11 +8,15 @@ export async function getAllMaintenanceRequests(req, res) {
             path: 'Asset',
             select: 'AssetID -_id' 
         });
-        const formattedRequests = maintenanceRequests.map(request => ({
-            ...request.toObject(),
-            AssetID: request.Asset ? request.Asset.AssetID : null,
-            Asset: undefined
-        }));
+        const formattedRequests = maintenanceRequests.map(request => {
+            const formattedRequest = {
+                ...request.toObject(),
+                AssetID: request.Asset ? request.Asset.AssetID : null,
+                Asset: undefined 
+            };
+            formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
+            return formattedRequest;
+        });
         res.status(200).json({ maintenanceRequests: formattedRequests });
     } catch (error) {
         console.error('Error fetching maintenance requests:', error);
@@ -25,11 +30,15 @@ export async function getAllMaintenanceRequests(req, res) {
             path: 'Asset',
             select: 'Name -_id'
         });
-        const formattedRequests = maintenanceRequests.map(request => ({
-            ...request.toObject(),
+        const formattedRequests = maintenanceRequests.map(request => {
+            const formattedRequest = {
+                ...request.toObject(),
             AssetName: request.Asset ? request.Asset.Name : null,
             Asset: undefined
-        }));
+        };
+            formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
+            return formattedRequest;
+        });
         res.status(200).json({ maintenanceRequests: formattedRequests });
     } catch (error) {
         console.error('Error fetching maintenance requests:', error);
@@ -104,6 +113,7 @@ export async function getMaintenanceRequestById(req, res) {
             AssetName: maintenanceRequest.Asset ? maintenanceRequest.Asset.Name : null,
             Asset: undefined 
         };
+        formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
         res.status(200).json(formattedRequest);
     } catch (error) {
         console.error('Error fetching maintenanceRequest by ID:', error);
@@ -126,6 +136,7 @@ export async function getMaintenanceRequestById(req, res) {
             AssetName: maintenanceRequest.Asset ? maintenanceRequest.Asset.Name : null,
             Asset: undefined
         };
+        formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
         res.status(200).json(formattedRequest);
     } catch (error) {
         console.error('Error fetching maintenanceRequest by ID:', error);
