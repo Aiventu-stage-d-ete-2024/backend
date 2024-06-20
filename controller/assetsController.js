@@ -12,7 +12,7 @@ export async function getAllAssets (req, res) {
 
 export async function createAsset(req, res) {
     try {
-        const newAsset = await Assets.create(req.body); // Assuming req.body contains the asset data
+        const newAsset = await Assets.create(req.body);
         res.status(201).json(newAsset);
     } catch (error) {
         console.error('Error creating asset:', error);
@@ -47,5 +47,4 @@ export async function updateAsset(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
-
 

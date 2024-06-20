@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectToDatabase from './database.js';
 import assetsRoute from './route/assetsRoute.js';
+import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
 
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/assets', assetsRoute);
+app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
