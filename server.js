@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import connectToDatabase from './database.js';
 import assetsRoute from './route/assetsRoute.js';
 import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
@@ -10,7 +11,7 @@ import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
 dotenv.config();
 const app = express();
 connectToDatabase();
-
+app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
