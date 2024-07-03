@@ -2,14 +2,16 @@ import MaintenanceRequests from '../model/maintenanceRequestsModel.js';
 import Assets from '../model/assetsModel.js';
 import moment from 'moment';
 
+
+
 export async function getAllMaintenanceRequests(req, res) {
     try {
         const maintenanceRequests = await MaintenanceRequests.find();
-        const formattedRequests = maintenanceRequests.map(request => {
+        const formattedRequests = maintenanceRequests.map(maintenanceRequest => {
             const formattedRequest = {
-                ...request.toObject(),
-                AssetID: request.Asset,
-                Asset: undefined 
+                ...maintenanceRequest.toObject(),
+                Asset: maintenanceRequest.Asset,
+                AssetID: undefined 
             };
             formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
             return formattedRequest;
@@ -21,24 +23,8 @@ export async function getAllMaintenanceRequests(req, res) {
     }
 }
 
-/* export async function getAllMaintenanceRequests(req, res) {
-    try {
-        const maintenanceRequests = await MaintenanceRequests.find();
-        const formattedRequests = maintenanceRequests.map(request => {
-            const formattedRequest = {
-                ...request.toObject(),
-            AssetName: request.Asset,
-            Asset: undefined
-        };
-            formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
-            return formattedRequest;
-        });
-        res.status(200).json({ maintenanceRequests: formattedRequests });
-    } catch (error) {
-        console.error('Error fetching maintenance requests:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}*/
+
+
 
 export async function createMaintenanceRequest(req, res) {
     const {
@@ -121,8 +107,8 @@ export async function getMaintenanceRequestById(req, res) {
         }
         const formattedRequest = {
             ...maintenanceRequest.toObject(),
-            AssetID: maintenanceRequest.Asset,
-            Asset: undefined
+            Asset: maintenanceRequest.Asset,
+            AssetID: undefined
         };
         formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
         res.status(200).json(formattedRequest);
