@@ -7,7 +7,6 @@ import connectToDatabase from './database.js';
 import assetsRoute from './route/assetsRoute.js';
 import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
 
-
 dotenv.config();
 const app = express();
 connectToDatabase();
