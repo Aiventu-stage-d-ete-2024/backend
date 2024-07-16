@@ -2,8 +2,6 @@ import MaintenanceRequests from '../model/maintenanceRequestsModel.js';
 import Assets from '../model/assetsModel.js';
 import moment from 'moment';
 
-
-
 export async function getAllMaintenanceRequests(req, res) {
     try {
         const maintenanceRequests = await MaintenanceRequests.find();
@@ -66,16 +64,20 @@ export async function createMaintenanceRequest(req, res) {
 export async function updateMaintenanceRequest(req, res) {
     try {
         const { id } = req.params;
-        const updatedMaintenanceRequest = await MaintenanceRequests.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedMaintenanceRequest) {
-            return res.status(404).json({ message: 'MaintenanceRequest not found' });
+        const updatedData = req.body;
+        const updatedRequest = await MaintenanceRequests.findByIdAndUpdate(id, updatedData, { new: true });
+        console.log('Updating maintenance request with data:', req.body);
+        if (!updatedRequest) {
+            return res.status(404).json({ message: 'Maintenance request not found' });
         }
-        res.status(200).json(updatedMaintenanceRequest);
+
+        res.status(200).json(updatedRequest);
     } catch (error) {
-        console.error('Error updating maintenanceRequest:', error);
+        console.error('Error updating maintenance request:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
+
 
 
 /*export async function getMaintenanceRequestById(req, res) {
@@ -98,22 +100,34 @@ export async function updateMaintenanceRequest(req, res) {
     }
 }*/
 
-export async function getMaintenanceRequestById(req, res) {
+export async function getMaintenanceRequestByRequestID(req, res) {
+    try {
+        const { RequestID } = req.params;
+        const maintenanceRequest = await MaintenanceRequests.findOne({ RequestID: RequestID });
+
+        if (!maintenanceRequest) {
+            return res.status(404).json({ message: 'maintenanceRequest not found' });
+        }
+
+        res.status(200).json(maintenanceRequest);
+    } catch (error) {
+        console.error('Error fetching maintenanceRequest by RequestID:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+export async function deleteRequest(req, res) {
     try {
         const { id } = req.params;
-        const maintenanceRequest = await MaintenanceRequests.findById(id);
-        if (!maintenanceRequest) {
-            return res.status(404).json({ message: 'MaintenanceRequest not found' });
+        const deletedmaintenanceRequest = await MaintenanceRequests.findByIdAndDelete(id);
+        
+        if (!deletedmaintenanceRequest) {
+            return res.status(404).json({ message: 'request not found' });
         }
-        const formattedRequest = {
-            ...maintenanceRequest.toObject(),
-            Asset: maintenanceRequest.Asset,
-            AssetID: undefined
-        };
-        formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
-        res.status(200).json(formattedRequest);
+
+        res.status(200).json({ message: 'request deleted successfully' });
     } catch (error) {
-        console.error('Error fetching maintenanceRequest by ID:', error);
+        console.error('Error deleting request:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }

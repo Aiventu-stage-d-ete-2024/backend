@@ -20,16 +20,18 @@ export async function createAsset(req, res) {
     }
 }
 
-export async function getAssetById(req, res) {
+export async function getAssetByAssetID(req, res) {
     try {
-        const { id } = req.params;
-        const asset = await Assets.findById(id);
+        const { AssetID } = req.params;
+        const asset = await Assets.findOne({ AssetID: AssetID });
+
         if (!asset) {
             return res.status(404).json({ message: 'Asset not found' });
         }
+
         res.status(200).json(asset);
     } catch (error) {
-        console.error('Error fetching asset by ID:', error);
+        console.error('Error fetching asset by AssetID:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
@@ -44,6 +46,22 @@ export async function updateAsset(req, res) {
         res.status(200).json(updatedAsset);
     } catch (error) {
         console.error('Error updating asset:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+export async function deleteAsset(req, res) {
+    try {
+        const { id } = req.params;
+        const deletedAsset = await Assets.findByIdAndDelete(id);
+        
+        if (!deletedAsset) {
+            return res.status(404).json({ message: 'Asset not found' });
+        }
+
+        res.status(200).json({ message: 'Asset deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting asset:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
