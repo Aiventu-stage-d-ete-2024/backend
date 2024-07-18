@@ -57,7 +57,7 @@ export async function forgotPassword(req, res) {
 
       const resetToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       
-      const resetUrl = `${process.env.CLIENT_URL}/resetpassword?token=${resetToken}`;
+      const resetUrl = `${process.env.CLIENT_URL}/api/users/resetpassword?token=${resetToken}`;
 
       const mailOptions = {
           from: process.env.EMAIL,
