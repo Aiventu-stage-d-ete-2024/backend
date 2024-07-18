@@ -65,3 +65,24 @@ export async function deleteAsset(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+export async function searchAssets(req, res) {
+   /* try {
+        const { query } = req.query;
+        const regex = new RegExp(query, 'i');
+        let searchConditions = [];
+        searchConditions.push({ AssetID: regex },{ Name: regex },{ Parent: regex },
+                { AssetType: regex },{ Manufacturer: regex },{ Model: regex },
+                { CustomerAccount: regex },{ FunctionalLocation: regex },
+                { CurrentLifecycleState: regex });
+                const assets = query 
+                    ? await Assets.find({ $or: searchConditions }) 
+                    : await Assets.find({});
+        
+                res.status(200).json(assets);
+            } catch (error) {
+                console.error('Error searching assets:', error);
+                res.status(500).json({ message: 'Server error' });
+            }
+                */
+        }

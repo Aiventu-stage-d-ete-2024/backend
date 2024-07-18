@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import connectToDatabase from './database.js';
 import assetsRoute from './route/assetsRoute.js';
 import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
+import userRoute from './route/userRoute.js';
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/assets', assetsRoute);
 app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
+app.use('/api/users',userRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
