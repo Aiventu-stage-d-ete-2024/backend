@@ -14,6 +14,6 @@ router.post('/', createAsset);
 router.get('/:AssetID', getAssetByAssetID);
 router.put('/:id', updateAsset);
 router.delete('/:id', deleteAsset);
-router.get('/searchAssets/:search', searchAssets);
+router.get('/search', searchAssets);
 
 export default router;

@@ -67,7 +67,7 @@ export async function deleteAsset(req, res) {
 }
 
 export async function searchAssets(req, res) {
-   /* try {
+   try {
         const { query } = req.query;
         const regex = new RegExp(query, 'i');
         let searchConditions = [];
@@ -84,5 +84,4 @@ export async function searchAssets(req, res) {
                 console.error('Error searching assets:', error);
                 res.status(500).json({ message: 'Server error' });
             }
-                */
         }

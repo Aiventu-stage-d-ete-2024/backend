@@ -7,6 +7,7 @@ import connectToDatabase from './database.js';
 import assetsRoute from './route/assetsRoute.js';
 import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
 import userRoute from './route/userRoute.js';
+import counterRoute from './route/countersRoute.js';
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/assets', assetsRoute);
 app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
 app.use('/api/users',userRoute);
+app.use('/api/counters',counterRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
