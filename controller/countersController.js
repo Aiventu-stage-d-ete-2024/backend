@@ -128,12 +128,12 @@ export async function deleteCounter(req, res) {
         const deletedcounter = await Counters.findByIdAndDelete(id);
         
         if (!deletedcounter) {
-            return res.status(404).json({ message: 'request not found' });
+            return res.status(404).json({ message: 'counter not found' });
         }
 
-        res.status(200).json({ message: 'request deleted successfully' });
+        res.status(200).json({ message: 'counter deleted successfully' });
     } catch (error) {
-        console.error('Error deleting request:', error);
+        console.error('Error deleting counter:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
