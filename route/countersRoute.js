@@ -4,7 +4,8 @@ import { getAllCounters,
          createCounter, 
          getCounterByCounterID, 
          updateCounter,
-         deleteCounter} from '../controller/countersController.js';
+         deleteCounter,
+         getCounterByAsset} from '../controller/countersController.js';
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.post('/', createCounter);
 router.get('/:CounterID', getCounterByCounterID);
 router.put('/:id', updateCounter);
 router.delete('/:id', deleteCounter);
+router.get('/:asset', getCounterByAsset);
 
 export default router;

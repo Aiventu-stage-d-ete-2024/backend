@@ -6,8 +6,6 @@ import moment from 'moment';
 export async function getAllCounters(req, res) {
     try {
         const counters = await Counters.find();
-
-        // Fetch all assets once to avoid multiple database queries
         const assetIds = counters.map(counter => counter.Asset).filter(Boolean);
         const functionalLocationIds = counters.map(counter => counter.FunctionalLocation).filter(Boolean);
         const uniqueIds = [...new Set([...assetIds, ...functionalLocationIds])];
@@ -47,8 +45,6 @@ export async function createCounter(req, res) {
         let asset;
         if (AssetID) {
             asset = await Assets.findOne({ AssetID });
-        } else if (AssetName) {
-            asset = await Assets.findOne({ Name: AssetName });
         } else {
             return res.status(400).json({ message: 'AssetID or AssetName is required' });
         }
@@ -84,7 +80,16 @@ export async function updateCounter(req, res) {
     }
 }
 
-
+export async function getCounterByAsset(req, res) {
+    try {
+        const { Asset } = req.params;
+        const counters = await Counters.find({ Asset });
+        res.status(200).json(counters);
+        } catch (error) {
+        console.error('Error fetching counters by Asset:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 
 /*export async function getCountersById(req, res) {
     try {
