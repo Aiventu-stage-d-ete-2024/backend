@@ -52,7 +52,7 @@ export async function createMaintenanceRequest(req, res) {
             JobType, JobVariant, JobTrade, ActualStart,
             StartedByWorker, ResponsibleWorkerGroup, ResponsibleWorker,
             CurrentLifecycleState, NumberOfFaults,});
-
+            console.log('Creating maintenance request with data:', req.body);
         await newMaintenanceRequest.save();
         res.status(201).json({ maintenanceRequest: newMaintenanceRequest });
     } catch (error) {

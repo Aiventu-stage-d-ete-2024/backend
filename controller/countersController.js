@@ -6,21 +6,11 @@ import moment from 'moment';
 export async function getAllCounters(req, res) {
     try {
         const counters = await Counters.find();
-        const assetIds = counters.map(counter => counter.Asset).filter(Boolean);
-        const functionalLocationIds = counters.map(counter => counter.FunctionalLocation).filter(Boolean);
-        const uniqueIds = [...new Set([...assetIds, ...functionalLocationIds])];
-
-        const assets = await Assets.find({ AssetID: { $in: uniqueIds } }).lean();
-        const assetMap = assets.reduce((acc, asset) => {
-            acc[asset.AssetID] = asset;
-            return acc;
-        }, {});
-
         const formattedCounters = counters.map(counter => {
             const formattedCounter = {
                 ...counter.toObject(),
-                Asset: assetMap[counter.Asset] ? assetMap[counter.Asset].Name : null,
-                FunctionalLocation: assetMap[counter.FunctionalLocation] ? assetMap[counter.FunctionalLocation].Name : null,
+                Asset: counter.Asset,
+                FunctionalLocation: counter.FunctionalLocation,
                 AssetID: undefined 
             };
             formattedCounter.Registered = formattedCounter.Registered ? moment(formattedCounter.Registered).format('M/D/YYYY h:mm:ss A') : null;
@@ -46,7 +36,7 @@ export async function createCounter(req, res) {
         if (AssetID) {
             asset = await Assets.findOne({ AssetID });
         } else {
-            return res.status(400).json({ message: 'AssetID or AssetName is required' });
+            return res.status(400).json({ message: 'AssetID is required' });
         }
         if (!asset) {
             return res.status(404).json({ message: 'Asset not found' });
@@ -82,16 +72,19 @@ export async function updateCounter(req, res) {
 
 export async function getCounterByAsset(req, res) {
     try {
-        const { Asset } = req.params;
-        const counters = await Counters.find({ Asset });
+        const { AssetID } = req.params;
+        const counters = await Counters.find({ Asset: AssetID });
+        counters.Registered = counters.Registered ? moment(counters.Registered).format('M/D/YYYY h:mm:ss A') : null;
         res.status(200).json(counters);
-        } catch (error) {
+    } catch (error) {
         console.error('Error fetching counters by Asset:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
 
-/*export async function getCountersById(req, res) {
+
+
+export async function getCountersById(req, res) {
     try {
         const { id } = req.params;
         const counter = await Counters.findById(id);
@@ -109,18 +102,22 @@ export async function getCounterByAsset(req, res) {
         console.error('Error fetching counter by ID:', error);
         res.status(500).json({ message: 'Server error' });
     }
-}*/
+}
 
 export async function getCounterByCounterID(req, res) {
     try {
         const { CounterID } = req.params;
         const counter = await Counters.findOne({ CounterID: CounterID });
-
         if (!counter) {
-            return res.status(404).json({ message: 'counter not found' });
+            return res.status(404).json({ message: 'Counters not found' });
         }
-
-        res.status(200).json(counter);
+        const formattedCounter = {
+            ...counter.toObject(),
+            AssetName: counter.Asset,
+            Asset: undefined 
+        };
+        formattedCounter.Registered = formattedCounter.Registered ? moment(formattedCounter.Registered).format('M/D/YYYY h:mm:ss A') : null;
+        res.status(200).json(formattedCounter);
     } catch (error) {
         console.error('Error fetching counter by CounterID:', error);
         res.status(500).json({ message: 'Server error' });
