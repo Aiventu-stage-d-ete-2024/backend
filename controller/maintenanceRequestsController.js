@@ -131,3 +131,24 @@ export async function deleteRequest(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+export async function getMaintenanceRequestsByDate(req, res) {
+    try {
+        const { date } = req.params;
+        const start = new Date(date);
+        const end = new Date(date);
+        end.setDate(end.getDate() + 1);
+
+        const requests = await MaintenanceRequests.find({
+            ActualStart: {
+                $gte: start,
+                $lt: end
+            }
+        });
+
+        res.status(200).json({ maintenanceRequests: requests });
+    } catch (error) {
+        console.error('Error fetching maintenance requests by date:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}

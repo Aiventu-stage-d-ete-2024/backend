@@ -4,7 +4,8 @@ import { getAllMaintenanceRequests,
          createMaintenanceRequest, 
          getMaintenanceRequestByRequestID, 
          updateMaintenanceRequest,
-         deleteRequest } from '../controller/maintenanceRequestsController.js';
+         deleteRequest,
+         getMaintenanceRequestsByDate} from '../controller/maintenanceRequestsController.js';
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.post('/', createMaintenanceRequest);
 router.get('/:RequestID', getMaintenanceRequestByRequestID);
 router.put('/:id', updateMaintenanceRequest);
 router.delete('/:id', deleteRequest);
+router.get('/date/:date', getMaintenanceRequestsByDate);
 
 export default router;
