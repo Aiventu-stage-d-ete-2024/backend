@@ -8,6 +8,7 @@ import assetsRoute from './route/assetsRoute.js';
 import maintenanceRequestsRoute from './route/maintenanceRequestsRoute.js';
 import userRoute from './route/userRoute.js';
 import counterRoute from './route/countersRoute.js';
+import notificationsRoute from './route/notificationsRoute.js';
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/assets', assetsRoute);
 app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
 app.use('/api/users',userRoute);
 app.use('/api/counters',counterRoute);
+app.use('/api/notifications', notificationsRoute);
 
 const PORT = process.env.PORT || 3000;
 
