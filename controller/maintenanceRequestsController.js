@@ -153,3 +153,38 @@ export async function getMaintenanceRequestsByDate(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+export async function searchMaintenanceRequests(req, res) {
+    try {
+        const { query } = req.query;
+
+        if (!query || query.trim() === '') {
+            const allRequests = await MaintenanceRequests.find();
+            return res.status(200).json(allRequests);
+        }
+
+        const regex = new RegExp(query, 'i');
+        const requests = await MaintenanceRequests.find({
+            $or: [
+                { RequestID: regex },
+                { RequestType: regex },
+                { Description: regex },
+                { FunctionalLocation: regex },
+                { AssetName: regex },
+                { AssetID: regex },
+                { JobType: regex },
+                { JobVariant: regex },
+                { JobTrade: regex },
+                { StartedByWorker: regex },
+                { ResponsibleWorkerGroup: regex },
+                { ResponsibleWorker: regex },
+                { CurrentLifecycleState: regex }
+            ]
+        });
+
+        res.status(200).json(requests);
+    } catch (error) {
+        console.error('Error searching maintenance requests:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}

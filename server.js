@@ -42,6 +42,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to Aiventu backend!');
 });
 
+
 app.use('/api/assets', assetsRoute);
 app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
 app.use('/api/users', userRoute);

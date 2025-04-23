@@ -140,3 +140,43 @@ export async function deleteCounter(req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+export async function searchCounters(req, res) {
+    try {
+        const { AssetID } = req.params;
+        const { query } = req.query;
+
+        let counters;
+
+        if (!query || query.trim() === '') {
+            counters = await Counters.find({ Asset: AssetID });
+        } else {
+            const regex = new RegExp(query, 'i');
+            counters = await Counters.find({
+                Asset: AssetID,
+                $or: [
+                    { CounterID: regex },
+                    { AssetID: regex },
+                    { Asset: regex },
+                    { Counter: regex },
+                    { CounterReset: regex },
+                    { Unit: regex },
+                    { FunctionalLocation: regex },
+                ],
+            });
+        }
+
+        const formattedCounters = counters.map(counter => {
+            if (counter.Registered) {
+                counter = counter.toObject();
+                counter.Registered = moment(counter.Registered).format('M/D/YYYY h:mm:ss A');
+            }
+            return counter;
+        });
+
+        res.status(200).json(formattedCounters);
+    } catch (error) {
+        console.error('Error searching counters:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}

@@ -67,21 +67,33 @@ export async function deleteAsset(req, res) {
 }
 
 export async function searchAssets(req, res) {
-   try {
+    try {
         const { query } = req.query;
-        const regex = new RegExp(query, 'i');
-        let searchConditions = [];
-        searchConditions.push({ AssetID: regex },{ Name: regex },{ Parent: regex },
-                { AssetType: regex },{ Manufacturer: regex },{ Model: regex },
-                { CustomerAccount: regex },{ FunctionalLocation: regex },
-                { CurrentLifecycleState: regex });
-                const assets = query 
-                    ? await Assets.find({ $or: searchConditions }) 
-                    : await Assets.find({});
-        
-                res.status(200).json(assets);
-            } catch (error) {
-                console.error('Error searching assets:', error);
-                res.status(500).json({ message: 'Server error' });
-            }
+
+        if (!query || query.trim() === '') {
+            const allAssets = await Assets.find();
+            return res.status(200).json(allAssets);
         }
+
+        const searchRegex = new RegExp(query, 'i');
+        
+        const assets = await Assets.find({
+            $or: [
+                { AssetID: searchRegex },
+                { Name: searchRegex },
+                { Parent: searchRegex },
+                { AssetType: searchRegex },
+                { Manufacturer: searchRegex },
+                { Model: searchRegex },
+                { CustomerAccount: searchRegex },
+                { FunctionalLocation: searchRegex },
+                { CurrentLifecycleState: searchRegex }
+            ]
+        });
+
+        return res.status(200).json(assets);
+    } catch (error) {
+        console.error('Error searching assets:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+}
