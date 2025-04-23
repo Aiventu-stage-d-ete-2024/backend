@@ -1,6 +1,7 @@
 import Counters from '../model/countersModel.js';
 import Assets from '../model/assetsModel.js';
 import moment from 'moment';
+import { createNotification as createNotificationUtil} from '../middleware/createNotification.js';
 
 
 export async function getAllCounters(req, res) {
@@ -41,11 +42,11 @@ export async function createCounter(req, res) {
         if (!asset) {
             return res.status(404).json({ message: 'Asset not found' });
         }
-
         const newCounters = new Counters({
             CounterID,Asset: asset.AssetID,FunctionalLocation: asset.FunctionalLocation,
             Counter,CounterReset,Registered,Value,Unit,AggregatedValue,Totals,});
         await newCounters.save();
+        await createNotificationUtil(`New counter added for Asset: ${asset.AssetID} (${Counter})`);
         res.status(201).json({ counter: newCounters });
     } catch (error) {
         console.error('Error creating counter:', error);
@@ -62,7 +63,7 @@ export async function updateCounter(req, res) {
         if (!updatedCounter) {
             return res.status(404).json({ message: 'Counter not found' });
         }
-
+        await createNotificationUtil(`Counter updated: ${updatedCounter.Counter}`);
         res.status(200).json(updatedCounter);
     } catch (error) {
         console.error('Error updating counter:', error);
@@ -132,7 +133,7 @@ export async function deleteCounter(req, res) {
         if (!deletedcounter) {
             return res.status(404).json({ message: 'counter not found' });
         }
-
+        await createNotificationUtil(`Counter deleted: ${deletedcounter.Counter}`);
         res.status(200).json({ message: 'counter deleted successfully' });
     } catch (error) {
         console.error('Error deleting counter:', error);

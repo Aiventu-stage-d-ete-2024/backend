@@ -1,28 +1,20 @@
 import Notifications from '../model/notificationsModel.js';
+import { createNotification as createNotificationUtil  } from '../middleware/createNotification.js';
 import { io } from '../server.js'; 
 
-export async function createNotification(req, res) {
+export async function postNotification(req, res) {
     try {
       const { message } = req.body;
+
       if (!message) {
-        return res.status(400).json({ error: 'Message is required' });
+        return res.status(400).json({ message: 'Message is required' });
       }
-      if (typeof message !== 'string') {
-        return res.status(400).json({ error: 'Message must be a string' });
-      }
-      const newNotification = new Notifications({ 
-        message: message
-      });
-      await newNotification.save();
-      const io = req.app.get('io');
-      if (io) {
-        io.emit('newNotification', newNotification);
-      }
-      console.log("Notification saved:", message); 
-      return res.status(201).json(newNotification);
+  
+      const newNotification = await createNotificationUtil(message);
+      res.status(201).json(newNotification);
     } catch (error) {
-      console.error("Error creating notification:", error);
-      return res.status(500).json({ error: error.message });
+      console.error('Error creating notification via HTTP:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
     }
   }
 
@@ -34,24 +26,6 @@ export async function getNotifications(req, res) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ 
       message: 'Server error',
-      error: error.message 
-    });
-  }
-}
-
-export async function createNotificationViaHttp(req, res) {
-  try {
-    const { message } = req.body;
-    
-    if (!message) {
-      return res.status(400).json({ message: 'Message is required' });
-    }
-    
-    const notification = await createNotification(message);
-    res.status(201).json(notification);
-  } catch (error) {
-    res.status(500).json({ 
-      message: 'Error creating notification',
       error: error.message 
     });
   }

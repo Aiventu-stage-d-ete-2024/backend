@@ -1,6 +1,7 @@
 import MaintenanceRequests from '../model/maintenanceRequestsModel.js';
 import Assets from '../model/assetsModel.js';
 import moment from 'moment';
+import {createNotification as createNotificationUtil} from '../middleware/createNotification.js';
 
 export async function getAllMaintenanceRequests(req, res) {
     try {
@@ -54,6 +55,7 @@ export async function createMaintenanceRequest(req, res) {
             CurrentLifecycleState, NumberOfFaults,});
             console.log('Creating maintenance request with data:', req.body);
         await newMaintenanceRequest.save();
+        await ccreateNotificationUtil(`New maintenance request created: ${newMaintenanceRequest.RequestID}`);
         res.status(201).json({ maintenanceRequest: newMaintenanceRequest });
     } catch (error) {
         console.error('Error creating maintenance request:', error);
@@ -70,7 +72,7 @@ export async function updateMaintenanceRequest(req, res) {
         if (!updatedRequest) {
             return res.status(404).json({ message: 'Maintenance request not found' });
         }
-
+        await createNotificationUtil(`Maintenance request updated: ${updatedRequest.RequestID}`);
         res.status(200).json(updatedRequest);
     } catch (error) {
         console.error('Error updating maintenance request:', error);
@@ -120,11 +122,10 @@ export async function deleteRequest(req, res) {
     try {
         const { id } = req.params;
         const deletedmaintenanceRequest = await MaintenanceRequests.findByIdAndDelete(id);
-        
         if (!deletedmaintenanceRequest) {
             return res.status(404).json({ message: 'request not found' });
         }
-
+        await createNotificationUtil(`Maintenance request deleted: ${deletedmaintenanceRequest.RequestID}`);
         res.status(200).json({ message: 'request deleted successfully' });
     } catch (error) {
         console.error('Error deleting request:', error);
