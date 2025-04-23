@@ -76,20 +76,28 @@ export async function searchAssets(req, res) {
         }
 
         const searchRegex = new RegExp(query, 'i');
-        
-        const assets = await Assets.find({
-            $or: [
-                { AssetID: searchRegex },
-                { Name: searchRegex },
-                { Parent: searchRegex },
-                { AssetType: searchRegex },
-                { Manufacturer: searchRegex },
-                { Model: searchRegex },
-                { CustomerAccount: searchRegex },
-                { FunctionalLocation: searchRegex },
-                { CurrentLifecycleState: searchRegex }
-            ]
-        });
+        const numericQuery = !isNaN(query) ? Number(query) : null;
+
+        const orConditions = [
+            { AssetID: searchRegex },
+            { Name: searchRegex },
+            { Parent: searchRegex },
+            { AssetType: searchRegex },
+            { Manufacturer: searchRegex },
+            { Model: searchRegex },
+            { CustomerAccount: searchRegex },
+            { FunctionalLocation: searchRegex },
+            { CurrentLifecycleState: searchRegex },
+        ];
+
+        if (numericQuery !== null) {
+            orConditions.push(
+                { NumberOfChildren: numericQuery },
+                { Criticality: numericQuery }
+            );
+        }
+
+        const assets = await Assets.find({ $or: orConditions });
 
         return res.status(200).json(assets);
     } catch (error) {

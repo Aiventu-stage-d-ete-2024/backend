@@ -46,7 +46,7 @@ export async function createCounter(req, res) {
             CounterID,Asset: asset.AssetID,FunctionalLocation: asset.FunctionalLocation,
             Counter,CounterReset,Registered,Value,Unit,AggregatedValue,Totals,});
         await newCounters.save();
-        await createNotificationUtil(`New counter added for Asset: ${asset.AssetID} (${Counter})`);
+        await createNotificationUtil(`New counter ${Counter} added for Asset ${asset.AssetID}`);
         res.status(201).json({ counter: newCounters });
     } catch (error) {
         console.error('Error creating counter:', error);
@@ -152,17 +152,29 @@ export async function searchCounters(req, res) {
             counters = await Counters.find({ Asset: AssetID });
         } else {
             const regex = new RegExp(query, 'i');
+            const numericQuery = !isNaN(query) ? Number(query) : null;
+
+            const orConditions = [
+                { CounterID: regex },
+                { AssetID: regex },
+                { Asset: regex },
+                { Counter: regex },
+                { CounterReset: regex },
+                { Unit: regex },
+                { FunctionalLocation: regex },
+            ];
+
+            if (numericQuery !== null) {
+                orConditions.push(
+                    { Value: numericQuery },
+                    { AggregatedValue: numericQuery },
+                    { Totals: numericQuery }
+                );
+            }
+
             counters = await Counters.find({
                 Asset: AssetID,
-                $or: [
-                    { CounterID: regex },
-                    { AssetID: regex },
-                    { Asset: regex },
-                    { Counter: regex },
-                    { CounterReset: regex },
-                    { Unit: regex },
-                    { FunctionalLocation: regex },
-                ],
+                $or: orConditions,
             });
         }
 
