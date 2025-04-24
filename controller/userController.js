@@ -39,64 +39,71 @@ export async function signIn(req, res) {
 
 
 const transporter = nodemailer.createTransport({
-  service: 'Outlook',
+  host: 'smtp-relay.brevo.com',
+  port: 587,
+  secure: false,
   auth: {
       user: process.env.EMAIL,
       pass: process.env.PASSWORD,
   },
+  logger: true,  
+  debug: true 
 });
 
 export async function forgotPassword(req, res) {
-  const { Email } = req.body;
-
-  try {
-      const user = await Users.findOne({ Email });
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-
-      const resetToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      
-      const resetUrl = `${process.env.CLIENT_URL}/api/users/resetpassword?token=${resetToken}`;
-
-      const mailOptions = {
-          from: process.env.EMAIL,
-          to: user.Email,
-          subject: 'Password Reset Request',
-          text: `You requested a password reset. Please click the link to reset your password: ${resetUrl}`,
-          html: `<p>You requested a password reset. Please click the link to reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p>`,
-      };
-      transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-              console.error('Error sending email:', error);
-              return res.status(500).json({ message: 'Error sending email' });
-          }
-          res.status(200).json({ message: 'Reset link sent to your email address' });
-      });
-
-  } catch (error) {
-      console.error('Error in forgot password:', error);
-      res.status(500).json({ message: 'Server error' });
+    const { Email } = req.body;
+  
+    try {
+        const user = await Users.findOne({ Email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+  
+        const resetToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  
+        const resetUrl = `${process.env.CLIENT_URL}/api/users/resetpassword?token=${resetToken}`;
+  
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: user.Email,
+            subject: 'Password Reset Request',
+            text: `You requested a password reset. Please click the link to reset your password: ${resetUrl}`,
+            html: `<p>You requested a password reset. Please click the link to reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p>`,
+        };
+  
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ message: 'Error sending email' });
+            }
+            res.status(200).json({ message: 'Reset link sent to your email address' });
+        });
+  
+    } catch (error) {
+        console.error('Error in forgot password:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
   }
-}
+  
 
-export async function resetPassword(req, res) {
-  const { resetToken, newPassword } = req.body;
-
-  try {
-      const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
-      const user = await Users.findById(decoded._id);
-
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-
-      user.Password = newPassword;
-      await user.save();
-
-      res.status(200).json({ message: 'Password reset successful' });
-  } catch (error) {
-      console.error('Error resetting password:', error);
-      res.status(500).json({ message: 'Invalid or expired reset token' });
+  export async function resetPassword(req, res) {
+    const { resetToken, newPassword } = req.body;
+  
+    try {
+        const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+  
+        const user = await Users.findById(decoded._id);
+  
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+  
+        user.Password = newPassword;
+        await user.save();
+  
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).json({ message: 'Invalid or expired reset token' });
+    }
   }
-}
