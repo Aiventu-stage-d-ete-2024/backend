@@ -16,6 +16,7 @@ const maintenanceRequestsSchema = new Schema({
     StartedByWorker: String,
     ResponsibleWorkerGroup: String,
     ResponsibleWorker: String,
+    WorkOrder: String,
     CurrentLifecycleState: String,
     NumberOfFaults: Number,
 });

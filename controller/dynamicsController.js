@@ -1,4 +1,4 @@
-import axios from 'axios';
+/* import axios from 'axios';
 import qs from 'qs';
 
 const {
@@ -10,6 +10,7 @@ const {
 
 const OAUTH_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 
+// Get Access Token
 export async function getAccessToken() {
     const tokenData = {
         grant_type: 'client_credentials',
@@ -18,18 +19,29 @@ export async function getAccessToken() {
         scope: `${RESOURCE_URL}/.default`,
     };
 
-    const response = await axios.post(OAUTH_URL, qs.stringify(tokenData), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+    try {
+        const response = await axios.post(OAUTH_URL, qs.stringify(tokenData), {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        });
 
-    return response.data.access_token;
+        if (!response.data.access_token) {
+            throw new Error('No access token received');
+        }
+
+        return response.data.access_token;
+    } catch (error) {
+        console.error('Error getting access token:', error.response?.data || error.message);
+        throw new Error('Failed to get access token');
+    }
 }
 
-
+// Post Data to Dynamics 365
 export async function postToDynamics(req, res) {
     try {
         const { entity } = req.params;
         const payload = req.body;
+
+        // Retrieve access token
         const accessToken = await getAccessToken();
 
         const url = `${RESOURCE_URL}/data/${entity}`;
@@ -46,14 +58,19 @@ export async function postToDynamics(req, res) {
         });
     } catch (error) {
         console.error('D365 POST error:', error.response?.data || error.message);
-        res.status(500).json({ message: 'D365 POST failed', error: error.response?.data || error.message });
+        res.status(500).json({
+            message: 'D365 POST failed',
+            error: error.response?.data || error.message,
+        });
     }
 }
 
-
+// Get Data from Dynamics 365
 export async function getFromDynamics(req, res) {
     try {
         const { entity } = req.params;
+
+        // Retrieve access token
         const accessToken = await getAccessToken();
 
         const url = `${RESOURCE_URL}/data/${entity}`;
@@ -64,9 +81,17 @@ export async function getFromDynamics(req, res) {
             },
         });
 
+        if (!response.data || Object.keys(response.data).length === 0) {
+            return res.status(404).json({ message: 'No data found for this entity' });
+        }
+
         res.status(200).json(response.data);
     } catch (error) {
         console.error('D365 GET error:', error.response?.data || error.message);
-        res.status(500).json({ message: 'D365 GET failed', error: error.response?.data || error.message });
+        res.status(500).json({
+            message: 'D365 GET failed',
+            error: error.response?.data || error.message,
+        });
     }
 }
+ */

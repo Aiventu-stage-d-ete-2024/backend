@@ -31,7 +31,7 @@ export async function createMaintenanceRequest(req, res) {
         FunctionalLocation, AssetName, AssetID, 
         AssetVerified, JobType, JobVariant, JobTrade,
         ActualStart, StartedByWorker, ResponsibleWorkerGroup,
-        ResponsibleWorker, CurrentLifecycleState, NumberOfFaults,
+        ResponsibleWorker, WorkOrder, CurrentLifecycleState, NumberOfFaults,
     } = req.body;
 
     try {
@@ -52,7 +52,7 @@ export async function createMaintenanceRequest(req, res) {
             FunctionalLocation, Asset: asset.AssetID, AssetVerified,
             JobType, JobVariant, JobTrade, ActualStart,
             StartedByWorker, ResponsibleWorkerGroup, ResponsibleWorker,
-            CurrentLifecycleState, NumberOfFaults,});
+            WorkOrder, CurrentLifecycleState, NumberOfFaults,});
             console.log('Creating maintenance request with data:', req.body);
         await newMaintenanceRequest.save();
         await ccreateNotificationUtil(`New maintenance request created: ${newMaintenanceRequest.RequestID}`);
@@ -178,6 +178,7 @@ export async function searchMaintenanceRequests(req, res) {
                 { StartedByWorker: regex },
                 { ResponsibleWorkerGroup: regex },
                 { ResponsibleWorker: regex },
+                { WorkOrder: regex },
                 { CurrentLifecycleState: regex }
             ]
         });

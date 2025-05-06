@@ -14,6 +14,9 @@ import userRoute from './route/userRoute.js';
 import counterRoute from './route/countersRoute.js';
 import notificationsRoute from './route/notificationsRoute.js';
 
+/* import syncRoute from './route/syncRoute.js';
+import dAssetsRoute from './route/dAssetsRoute.js'; */
+
 dotenv.config();
 const app = express();
 
@@ -48,6 +51,9 @@ app.use('/api/maintenanceRequests', maintenanceRequestsRoute);
 app.use('/api/users', userRoute);
 app.use('/api/counters', counterRoute);
 app.use('/api/notifications', notificationsRoute);
+
+/* app.use('/api/sync', syncRoute);
+app.use('/api/dAssets', dAssetsRoute); */
 
 
 io.on('connection', (socket) => {
