@@ -46,8 +46,6 @@ const transporter = nodemailer.createTransport({
       user: process.env.EMAIL,
       pass: process.env.PASSWORD,
   },
-  logger: true,  
-  debug: true 
 });
 
 export async function forgotPassword(req, res) {
