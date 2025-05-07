@@ -20,8 +20,8 @@ const assetsSchema = new Schema({
 });
 
 assetsSchema.pre('save', function(next) {
-    this.lastModified = Date.now();
-    this.version += 1;
+    this.LastModified = Date.now();
+    this.Version += 1;
     next();
 });
 
