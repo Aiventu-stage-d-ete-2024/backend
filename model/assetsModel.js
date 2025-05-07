@@ -13,8 +13,8 @@ const assetsSchema = new Schema({
     Criticality: Number,
     FunctionalLocation: String,
     CurrentLifecycleState: String,
-    lastModified: { type: Date, default: Date.now, index: true },
-    version: { type: Number, default: 1 }
+    LastModified: { type: Date, default: Date.now, index: true },
+    Version: { type: Number, default: 1 }
 }, {
     timestamps: true
 });
