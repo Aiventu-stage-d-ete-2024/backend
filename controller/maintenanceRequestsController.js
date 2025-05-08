@@ -55,7 +55,7 @@ export async function createMaintenanceRequest(req, res) {
             WorkOrder, CurrentLifecycleState, NumberOfFaults,});
             console.log('Creating maintenance request with data:', req.body);
         await newMaintenanceRequest.save();
-        await ccreateNotificationUtil(`New maintenance request created: ${newMaintenanceRequest.RequestID}`);
+        await createNotificationUtil(`New maintenance request created: ${newMaintenanceRequest.RequestID}`);
         res.status(201).json({ maintenanceRequest: newMaintenanceRequest });
     } catch (error) {
         console.error('Error creating maintenance request:', error);
@@ -110,8 +110,13 @@ export async function getMaintenanceRequestByRequestID(req, res) {
         if (!maintenanceRequest) {
             return res.status(404).json({ message: 'maintenanceRequest not found' });
         }
-
-        res.status(200).json(maintenanceRequest);
+        const formattedRequest = {
+                ...maintenanceRequest.toObject(),
+                Asset: maintenanceRequest.Asset,
+                AssetID: undefined 
+            };
+        formattedRequest.ActualStart = formattedRequest.ActualStart ? moment(formattedRequest.ActualStart).format('M/D/YYYY h:mm:ss A') : null;
+        res.status(200).json(formattedRequest);
     } catch (error) {
         console.error('Error fetching maintenanceRequest by RequestID:', error);
         res.status(500).json({ message: 'Server error' });
