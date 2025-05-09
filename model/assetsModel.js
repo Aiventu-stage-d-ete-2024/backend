@@ -13,16 +13,16 @@ const assetsSchema = new Schema({
     Criticality: Number,
     FunctionalLocation: String,
     CurrentLifecycleState: String,
-    LastModified: { type: Date, default: Date.now, index: true },
-    Version: { type: Number, default: 1 }
-}, {
-    timestamps: true
+    //LastModified: { type: Date, default: Date.now, index: true },
+    //Version: { type: Number, default: 1 }
+    //}, {
+    //timestamps: true
 });
 
-assetsSchema.pre('save', function(next) {
+/*assetsSchema.pre('save', function(next) {
     this.LastModified = Date.now();
     this.Version += 1;
     next();
-});
+});*/
 
 export default model('Assets', assetsSchema);
