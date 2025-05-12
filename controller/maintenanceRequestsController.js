@@ -28,14 +28,16 @@ export async function getAllMaintenanceRequests(req, res) {
 export async function createMaintenanceRequest(req, res) {
     const {
         RequestID, RequestType, Description, ServiceLevel,
-        FunctionalLocation, AssetName, AssetID, 
+        FunctionalLocation, 
+        //AssetName, 
+        AssetID, 
         AssetVerified, JobType, JobVariant, JobTrade,
         ActualStart, StartedByWorker, ResponsibleWorkerGroup,
         ResponsibleWorker, WorkOrder, CurrentLifecycleState, NumberOfFaults,
     } = req.body;
 
     try {
-        let asset;
+        /* let asset;
         if (AssetID) {
             asset = await Assets.findOne({ AssetID });
         } else if (AssetName) {
@@ -45,11 +47,13 @@ export async function createMaintenanceRequest(req, res) {
         }
         if (!asset) {
             return res.status(404).json({ message: 'Asset not found' });
-        }
+        } */
 
         const newMaintenanceRequest = new MaintenanceRequests({
             RequestID, RequestType, Description, ServiceLevel,
-            FunctionalLocation, Asset: asset.AssetID, AssetVerified,
+            FunctionalLocation, 
+            //Asset: asset.
+            AssetID, AssetVerified,
             JobType, JobVariant, JobTrade, ActualStart,
             StartedByWorker, ResponsibleWorkerGroup, ResponsibleWorker,
             WorkOrder, CurrentLifecycleState, NumberOfFaults,});
