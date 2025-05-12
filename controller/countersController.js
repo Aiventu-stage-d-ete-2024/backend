@@ -29,11 +29,11 @@ export async function getAllCounters(req, res) {
 
 
 export async function createCounter(req, res) {
-    const {CounterID,AssetID,Counter,CounterReset, 
+    const {CounterID,AssetID,FunctionalLocation,Counter,CounterReset, 
         Registered,Value,Unit,AggregatedValue,Totals,} = req.body;
 
     try {
-        let asset;
+        /* let asset;
         if (AssetID) {
             asset = await Assets.findOne({ AssetID });
         } else {
@@ -41,10 +41,13 @@ export async function createCounter(req, res) {
         }
         if (!asset) {
             return res.status(404).json({ message: 'Asset not found' });
-        }
+        } */
         const newCounters = new Counters({
-            CounterID,Asset: asset.AssetID,FunctionalLocation: asset.FunctionalLocation,
-            Counter,CounterReset,Registered,Value,Unit,AggregatedValue,Totals,});
+            CounterID,
+            //Asset: asset.
+            AssetID,FunctionalLocation
+            //: asset.FunctionalLocation
+            ,Counter,CounterReset,Registered,Value,Unit,AggregatedValue,Totals,});
         await newCounters.save();
         await createNotificationUtil(`New counter ${Counter} added for Asset ${asset.AssetID}`);
         res.status(201).json({ counter: newCounters });
