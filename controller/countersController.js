@@ -49,7 +49,7 @@ export async function createCounter(req, res) {
             //: asset.FunctionalLocation
             ,Counter,CounterReset,Registered,Value,Unit,AggregatedValue,Totals,});
         await newCounters.save();
-        await createNotificationUtil(`New counter ${Counter} added for Asset ${asset.AssetID}`);
+        await createNotificationUtil(`New counter ${Counter} added for Asset ${AssetID}`);
         res.status(201).json({ counter: newCounters });
     } catch (error) {
         console.error('Error creating counter:', error);
