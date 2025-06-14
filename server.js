@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { Server } from 'socket.io';
 import http from 'http';
+import cron from 'node-cron';
+
 
 import connectToDatabase from './database.js';
 
@@ -58,6 +60,25 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
+
+cron.schedule('59 23 * * *', async () => {
+  try {
+    const db = mongoose.connection.db;
+    const collections = await db.listCollections().toArray();
+
+    console.log('Midnight DB cleanup started...');
+
+    for (const { name } of collections) {
+      await db.dropCollection(name);
+      console.log(`Dropped collection: ${name}`);
+    }
+
+    console.log('Midnight DB cleanup finished.');
+  } catch (err) {
+    console.error('Error during database cleanup:', err.message);
+  }
+});
+
 
 const PORT = process.env.PORT || 3000;
 
