@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
   });
 });
 
-cron.schedule('59 23 * * *', async () => {
+/*cron.schedule('59 23 * * *', async () => {
   try {
     const db = mongoose.connection.db;
     const collections = await db.listCollections().toArray();
@@ -77,7 +77,7 @@ cron.schedule('59 23 * * *', async () => {
   } catch (err) {
     console.error('Error during database cleanup:', err.message);
   }
-});
+});*/
 
 
 const PORT = process.env.PORT || 3000;
